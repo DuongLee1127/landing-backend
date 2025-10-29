@@ -3,7 +3,9 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 use App\Models\Image;
 
 Route::post('/login', [AuthController::class, 'login']);
@@ -19,13 +21,11 @@ Route::middleware('auth:sanctum')->group(function () {
         $path = $request->file('image')->store('uploads', 'public');
         $url = asset('storage/' . $path);
 
-
-
-        $image = Image::create([
-            'user_id' => $request->user()->id,
-            'path' => $path,
-            'url' => $url,
-        ]);
+        $image = DB::table('images')
+            ->updateOrInsert(
+                ['user_id' => $request->user()->id],
+                ['path' => $path, 'url' => $url]
+            );
 
         return response()->json([
             'message' => 'Upload thành công!',
@@ -47,4 +47,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
         return response()->json(['message' => 'Đã xoá ảnh!']);
     });
+    Route::get('/get-users', [AuthController::class, 'getUserInfo']);
+    // Route::get('/get-images/{id}', [Controller::class, 'getImageUser']);
 });

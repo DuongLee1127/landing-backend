@@ -103,6 +103,8 @@ class AuthController extends Controller
 
     public function user(Request $request)
     {
+        $user = $request->user();
+        $user->image = $this->getImageUser($user->id)[0]->url;
         return response()->json($request->user());
     }
 
