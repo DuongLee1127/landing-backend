@@ -3,7 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
-use App\Http\Controllers\Controller;
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Models\Image;
@@ -16,6 +16,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/upload', function (Request $request) {
         $request->validate([
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ], [
+            'image.required' => "Bạn chưa chọn ảnh",
+            'image.image' => "Trường hình ảnh phải là một hình ảnh",
+            'image.mimes' => "Hình ảnh phải có định dạng: jpeg, png, jpg, gif",
         ]);
 
         $path = $request->file('image')->store('uploads', 'public');
@@ -49,4 +53,6 @@ Route::middleware('auth:sanctum')->group(function () {
     });
     Route::get('/get-users', [AuthController::class, 'getUserInfo']);
     // Route::get('/get-images/{id}', [Controller::class, 'getImageUser']);
+    Route::get('get-user/{id}', [UserController::class, 'getUserIDInfo']);
+    Route::post('update-user/{id}', [UserController::class, 'updateUser']);
 });
