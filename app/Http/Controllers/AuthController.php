@@ -93,7 +93,7 @@ class AuthController extends Controller
         }
         // Mail::to($request->email)->send(new OtpMail($otpCode));
 
-        return response()->json(['message' => 'OTP đã được gửi qua email.']);
+        return response()->json(['message' => 'OTP already send to you email']);
     }
     public function register(Request $request)
     {
@@ -108,6 +108,7 @@ class AuthController extends Controller
                 [
                     'email' => 'required|email',
                     'password' => 'required|min:6|max:16|same:repassword',
+                    'otp' => 'required|digits:6',
                     'repassword' => 'required'
                 ],
                 [
@@ -117,8 +118,19 @@ class AuthController extends Controller
                     'password.min' => "Mật khẩu ít nhất 6 ký tự",
                     'repassword.required' => "Mật khẩu nhập lại không được bỏ trống",
                     'password.same' => "Nhập lại mật khẩu không trùng",
+                    'otp.required' => "Bạn chưa nhập mã OTP",
                 ]
             );
+
+            $otp = Otp::where('email', $request->email)
+                ->where('otp_code', $request->otp)
+                ->first();
+
+            if (!$otp) {
+                return response()->json(['message' => 'Mã OTP không hợp lệ.'], 400);
+            }
+
+            $otp->delete();
 
             User::create([
                 'email' => $request->email,
@@ -130,12 +142,15 @@ class AuthController extends Controller
                 'message' => 'Đăng ký tài khoản thành công'
             ], 200);
 
-
         } catch (ValidationException $e) {
             return response()->json([
                 'message' => $e->errors(),
                 'errors' => $e->errors(),
             ], 401);
+        } catch (\Exception $ge) {
+            return response()->json([
+                'message' => $ge->getMessage(),
+            ], 500);
         }
 
 
@@ -146,7 +161,7 @@ class AuthController extends Controller
     {
         $user = $request->user();
         $user->image = $this->getImageUser($user->id)[0]->url;
-        return response()->json($request->user());
+        return response()->json(['message' => $request->user()]);
     }
 
     public function logout(Request $request)
