@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Models\Image;
@@ -52,7 +53,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         return response()->json(['message' => 'Đã xoá ảnh!']);
     });
-    Route::get('/get-users', [AuthController::class, 'getUserInfo']);
+    Route::get('/get-users', [Controller::class, 'getUserInfo']);
     // Route::get('/get-images/{id}', [Controller::class, 'getImageUser']);
     Route::get('get-user/{id}', [UserController::class, 'getUserIDInfo']);
     Route::post('update-user/{id}', [UserController::class, 'updateUser']);

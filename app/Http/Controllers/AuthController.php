@@ -152,16 +152,13 @@ class AuthController extends Controller
                 'message' => $ge->getMessage(),
             ], 500);
         }
-
-
-
     }
 
     public function user(Request $request)
     {
         $user = $request->user();
         $user->image = $this->getImageUser($user->id)[0]->url;
-        return response()->json(['message' => $request->user()]);
+        return response()->json($request->user());
     }
 
     public function logout(Request $request)

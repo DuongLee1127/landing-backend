@@ -10,13 +10,20 @@ class Controller
     //
     function getUserInfo()
     {
+
         $users = DB::table('users')->select('name', 'email', 'id')->get();
+
+        // return response()->json($users);
         $data = [
         ];
 
         foreach ($users as $user) {
             $url = $this->getImageUser($user->id);
-            $user->image = $url[0]->url;
+            if (!empty($url[0])) {
+                $user->image = $url[0]->url;
+            } else {
+                $user->image = null;
+            }
             $data[] = $user;
         }
         return response()->json($data);

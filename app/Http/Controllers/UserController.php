@@ -15,7 +15,11 @@ class UserController extends Controller
     {
         $user = DB::table('users')->where('id', $id)->select('name', 'email')->first();
         $url = $this->getImageUser($id);
-        $user->image = $url[0]->url;
+        if (!empty($url[0])) {
+            $user->image = $url[0]->url;
+        } else {
+            $user->image = null;
+        }
         return response()->json($user);
     }
 
