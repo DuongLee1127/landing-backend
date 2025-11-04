@@ -12,6 +12,7 @@ use App\Models\Image;
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/send-otp', [AuthController::class, 'sendOtp']);
+Route::post('/get-token', [Controller::class, 'getToken']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -53,7 +54,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
         return response()->json(['message' => 'Đã xoá ảnh!']);
     });
-    Route::get('/get-users', [Controller::class, 'getUserInfo']);
+    Route::get('/get-users', [UserController::class, 'getUserInfo']);
     // Route::get('/get-images/{id}', [Controller::class, 'getImageUser']);
     Route::get('get-user/{id}', [UserController::class, 'getUserIDInfo']);
     Route::post('update-user/{id}', [UserController::class, 'updateUser']);

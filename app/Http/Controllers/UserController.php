@@ -7,14 +7,44 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Database\QueryException;
+use App\Http\Controllers\ImageController;
 
 class UserController extends Controller
 {
     //
+
+    public $imageController;
+
+    public function __construct(ImageController $imageController)
+    {
+        $this->imageController = $imageController;
+    }
+
+    function getUserInfo()
+    {
+        // return "abc";
+
+        $users = DB::table('users')->select('name', 'email', 'id')->get();
+
+        // return response()->json($users);
+        $data = [
+        ];
+
+        foreach ($users as $user) {
+            $url = $this->imageController->getImageUser($user->id);
+            if (!empty($url[0])) {
+                $user->image = $url[0]->url;
+            } else {
+                $user->image = null;
+            }
+            $data[] = $user;
+        }
+        return response()->json($data);
+    }
     function getUserIDInfo($id)
     {
         $user = DB::table('users')->where('id', $id)->select('name', 'email')->first();
-        $url = $this->getImageUser($id);
+        $url = $this->imageController->getImageUser($id);
         if (!empty($url[0])) {
             $user->image = $url[0]->url;
         } else {

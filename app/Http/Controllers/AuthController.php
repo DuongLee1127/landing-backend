@@ -11,10 +11,16 @@ use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\OtpMail;
-use function PHPUnit\Framework\isEmpty;
+use App\Http\Controllers\ImageController;
 
 class AuthController extends Controller
 {
+
+    public $imageController;
+    public function __construct(ImageController $imageController)
+    {
+        $this->imageController = $imageController;
+    }
     public function login(Request $request)
     {
         try {
@@ -40,7 +46,7 @@ class AuthController extends Controller
             }
 
             $token = $user->createToken('api_token')->plainTextToken;
-
+            $user->is_online = true;
             return response()->json([
                 'message' => 'Đăng nhập thành công',
                 'token' => $token,
@@ -156,16 +162,25 @@ class AuthController extends Controller
 
     public function user(Request $request)
     {
+        // return "abc";
         $user = $request->user();
-        $user->image = $this->getImageUser($user->id)[0]->url;
+        // return $user;
+        $url = $this->imageController->getImageUser($user->id);
+        if (!empty($url[0])) {
+            $user->image = $url[0]->url;
+        } else {
+            $user->image = null;
+        }
         return response()->json($request->user());
     }
 
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
+        $request->user()->is_online = false;
         return response()->json([
-            'message' => "Đăng xuất"
+            'message' => "Đăng xuất",
+            'user' => $request->user()
         ]);
     }
 }
