@@ -24,7 +24,7 @@ class UserController extends Controller
     {
         // return "abc";
 
-        $users = DB::table('users')->select('name', 'email', 'id')->get();
+        $users = DB::table('users')->select('name', 'email', 'id', 'is_online')->get();
 
         // return response()->json($users);
         $data = [
@@ -43,7 +43,7 @@ class UserController extends Controller
     }
     function getUserIDInfo($id)
     {
-        $user = DB::table('users')->where('id', $id)->select('name', 'email')->first();
+        $user = DB::table('users')->where('id', $id)->select('name', 'email', 'role_id')->first();
         $url = $this->imageController->getImageUser($id);
         if (!empty($url[0])) {
             $user->image = $url[0]->url;
@@ -61,14 +61,18 @@ class UserController extends Controller
                     'email' => 'required|email',
                     'name' => 'required',
                     'image' => 'required',
+                    'role' => 'required',
                 ],
                 [
                     'email.required' => "Email không được bỏ trống",
                     'email.email' => "Không đúng định dạng email",
                     'name.required' => "Tên không được bỏ trống",
                     'image.required' => "Bạn chưa chọn ảnh",
+                    'role.required' => "Vai trò không được bỏ trống"
                 ]
             );
+
+
 
             if (is_string($request->image)) {
                 $url = $request->image;
@@ -93,12 +97,14 @@ class UserController extends Controller
                     [
                         'name' => $request->name,
                         'email' => $request->email,
+                        'role_id' => $request->role,
                     ]
                 );
             } else {
                 $user->update(
                     [
                         'name' => $request->name,
+                        'role_id' => $request->role,
                     ]
                 );
             }
@@ -122,6 +128,7 @@ class UserController extends Controller
 
             return response()->json([
                 'message' => "Update thành công",
+                'user' => $user,
             ], 200);
 
         } catch (ValidationException $e) {

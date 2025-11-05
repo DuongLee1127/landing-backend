@@ -12,6 +12,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\OtpMail;
 use App\Http\Controllers\ImageController;
+use App\Models\Role;
 
 class AuthController extends Controller
 {
@@ -46,11 +47,15 @@ class AuthController extends Controller
             }
 
             $token = $user->createToken('api_token')->plainTextToken;
-            $user->is_online = true;
+            $user->update(
+                [
+                    'is_online' => true,
+                ]
+            );
             return response()->json([
                 'message' => 'Đăng nhập thành công',
                 'token' => $token,
-                'user' => $user
+                'role_id' => $user->role_id
             ]);
 
         } catch (ValidationException $e) {
@@ -141,6 +146,7 @@ class AuthController extends Controller
             User::create([
                 'email' => $request->email,
                 'name' => $request->name,
+                'role_id' => '2',
                 'password' => Hash::make($request->password)
             ]);
 
@@ -177,7 +183,11 @@ class AuthController extends Controller
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
-        $request->user()->is_online = false;
+        $request->user()->update(
+            [
+                'is_online' => false,
+            ]
+        );
         return response()->json([
             'message' => "Đăng xuất",
             'user' => $request->user()
