@@ -8,14 +8,15 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Models\Image;
+use App\Http\Middleware\CheckRole;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/send-otp', [AuthController::class, 'sendOtp']);
 Route::post('/get-token', [Controller::class, 'getToken']);
-Route::middleware('auth:sanctum')->group(function () {
+Route::middleware(['auth:sanctum', CheckRole::class])->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
-    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/logout', [AuthController::class, 'logout'])->withoutMiddleware([CheckRole::class]);
     Route::post('/upload', function (Request $request) {
         $request->validate([
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',

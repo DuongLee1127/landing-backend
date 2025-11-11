@@ -24,7 +24,7 @@ class UserController extends Controller
     {
         // return "abc";
 
-        $users = DB::table('users')->select('name', 'email', 'id', 'is_online')->get();
+        $users = DB::table('users')->select('name', 'email', 'id', 'is_online', 'role_id')->get();
 
         // return response()->json($users);
         $data = [
