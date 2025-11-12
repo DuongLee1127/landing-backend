@@ -53,7 +53,13 @@
 
 <body>
     <div class="container">
-        <div class="header">🔐 Dương gửi OTP</div>
+        <div class="header">
+            <img width="20px" src="https://drive.google.com/uc?export=view&id=13YRo8jeh9cJLdwW4rV05hetOTvuuk03N"
+                alt="ly">
+            Dương
+            gửi OTP <img width="20px" src="https://drive.google.com/uc?export=view&id=13YRo8jeh9cJLdwW4rV05hetOTvuuk03N"
+                alt="ly">
+        </div>
 
         <p>Xin chào,</p>
         <p>Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi.</p>
