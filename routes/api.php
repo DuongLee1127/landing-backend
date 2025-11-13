@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\SlideController;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 use App\Models\Image;
@@ -59,4 +60,6 @@ Route::middleware(['auth:sanctum', CheckRole::class])->group(function () {
     // Route::get('/get-images/{id}', [Controller::class, 'getImageUser']);
     Route::get('get-user/{id}', [UserController::class, 'getUserIDInfo']);
     Route::post('update-user/{id}', [UserController::class, 'updateUser']);
+    Route::post('/add-slide', [SlideController::class, 'store']);
+    Route::get('/slides', [SlideController::class, 'show']);
 });
