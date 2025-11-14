@@ -62,4 +62,5 @@ Route::middleware(['auth:sanctum', CheckRole::class])->group(function () {
     Route::post('update-user/{id}', [UserController::class, 'updateUser']);
     Route::post('/add-slide', [SlideController::class, 'store']);
     Route::get('/slides', [SlideController::class, 'show']);
+    Route::delete('/delete/{id}', [SlideController::class, 'destroy']);
 });

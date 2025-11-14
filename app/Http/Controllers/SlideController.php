@@ -34,7 +34,7 @@ class SlideController extends Controller
     {
         try {
             $request->validate([
-                'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif',
             ], [
                 'image.required' => "Bạn chưa chọn ảnh",
                 'image.image' => "Trường hình ảnh phải là một hình ảnh",
@@ -52,11 +52,13 @@ class SlideController extends Controller
             return response()->json(['error' => 'Tạo slide không thành công'], 500);
         }
 
-        return response()->json(['message' => 'Thêm mới slide thành công'], 200);
+        return response()->json(['message' => 'Thêm mới slide thành công', 'url' => $url, 'user_name' => $request->user()->name], 200);
     }
     public function show()
     {
         $slides = DB::table('slides')->select('*')->get();
+
+        $slides = $slides->reverse()->values()->all();
 
         foreach ($slides as $slide) {
             $user = User::find($slide->user_id);
@@ -87,6 +89,12 @@ class SlideController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $slide = Slide::find($id);
+        if (!$slide) {
+            return response()->json(['error' => 'Slide không tồn tại'], 404);
+        }
+
+        $slide->delete();
+        return response()->json(['message' => 'Xóa slide thành công'], 200);
     }
 }
