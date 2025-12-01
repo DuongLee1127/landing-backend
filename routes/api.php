@@ -56,11 +56,16 @@ Route::middleware(['auth:sanctum', CheckRole::class])->group(function () {
 
         return response()->json(['message' => 'Đã xoá ảnh!']);
     });
+
+    //Users
     Route::get('/get-users', [UserController::class, 'getUserInfo']);
     // Route::get('/get-images/{id}', [Controller::class, 'getImageUser']);
     Route::get('get-user/{id}', [UserController::class, 'getUserIDInfo']);
     Route::post('update-user/{id}', [UserController::class, 'updateUser']);
+
+    //Slide
     Route::post('/add-slide', [SlideController::class, 'store']);
     Route::get('/slides', [SlideController::class, 'show']);
     Route::delete('/delete/{id}', [SlideController::class, 'destroy']);
+    Route::post('/update-slide/{id}', [SlideController::class, 'update']);
 });

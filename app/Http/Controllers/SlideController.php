@@ -82,6 +82,28 @@ class SlideController extends Controller
     public function update(Request $request, string $id)
     {
         //
+        try {
+            $request->validate([
+                'image' => 'required|image|mimes:jpeg,png,jpg,gif',
+            ], [
+                'image.required' => "Bạn chưa chọn ảnh",
+                'image.image' => "Trường hình ảnh phải là một hình ảnh",
+                'image.mimes' => "Hình ảnh phải có định dạng: jpeg, png, jpg, gif",
+            ]);
+        } catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 400);
+        }
+        $path = $request->file('image')->store('uploads', 'public');
+        $url = asset('storage/' . $path);
+        $slide = Slide::updateOrCreate(
+            ['id' => $id],
+            ['path' => $path, 'url' => $url, 'user_id' => $request->user()->id]
+        );
+
+        if (!$slide) {
+            return response()->json(['error' => 'Sửa slide không thành công'], 500);
+        }
+        return response()->json(['message' => 'Sửa slide thành công', 'url' => $url, 'id' => $id, 'user_name' => $request->user()->name], 200);
     }
 
     /**
