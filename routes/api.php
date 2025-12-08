@@ -15,6 +15,7 @@ Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/send-otp', [AuthController::class, 'sendOtp']);
 Route::post('/get-token', [Controller::class, 'getToken']);
+Route::get('/slides', [SlideController::class, 'show']);
 Route::middleware(['auth:sanctum', CheckRole::class])->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
     Route::post('/logout', [AuthController::class, 'logout'])->withoutMiddleware([CheckRole::class]);
@@ -65,7 +66,6 @@ Route::middleware(['auth:sanctum', CheckRole::class])->group(function () {
 
     //Slide
     Route::post('/add-slide', [SlideController::class, 'store']);
-    Route::get('/slides', [SlideController::class, 'show']);
     Route::delete('/delete/{id}', [SlideController::class, 'destroy']);
     Route::post('/update-slide/{id}', [SlideController::class, 'update']);
 });
