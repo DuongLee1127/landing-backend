@@ -45,7 +45,7 @@ class SlideController extends Controller
         }
 
         $path = $request->file('image')->store('uploads', 'public');
-        dd($request->file('image'));
+        // dd($request->file('image'));
 
         $url = asset('storage/' . $path);
         $slide = Slide::create(['path' => $path, 'url' => $url, 'user_id' => $request->user()->id]);
